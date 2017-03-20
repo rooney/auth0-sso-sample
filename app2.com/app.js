@@ -4,7 +4,7 @@ $(document).ready(function () {
   document.body.style.display = 'none';
 
   // instantiate Lock
-  var lock = new Auth0Lock('ZjAxVwIFlBawtCS3L1Pm9AOghYeDaIlZ', 'auth0pnp.auth0.com', {
+  var lock = new Auth0Lock('3VRSUZtgCUl7QCB3r651noL4hrgY9cys', 'oc4.auth0.com', {
     auth: {
       params: {
         scope: 'openid name picture'
@@ -12,8 +12,8 @@ $(document).ready(function () {
     }
   });
   var auth0 = new Auth0({
-    domain: 'auth0pnp.auth0.com',
-    clientID: 'ZjAxVwIFlBawtCS3L1Pm9AOghYeDaIlZ',
+    domain: 'oc4.auth0.com',
+    clientID: '3VRSUZtgCUl7QCB3r651noL4hrgY9cys',
     callbackOnLocationHash: true
   });
 

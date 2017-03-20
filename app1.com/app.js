@@ -4,30 +4,43 @@ $(document).ready(function () {
   document.body.style.display = 'none';
 
   // instantiate Lock
-  var lock = new Auth0Lock('QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq', 'auth0pnp.auth0.com', {
+  var lock = new Auth0Lock('3VRSUZtgCUl7QCB3r651noL4hrgY9cys', 'oc4.auth0.com', {
     auth: {
       params: {
         scope: 'openid name picture'
       }
     }
   });
+  /*
   var auth0 = new Auth0({
-    domain: 'auth0pnp.auth0.com',
-    clientID: 'QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq',
+    domain: 'oc4.auth0.com',
+    clientID: '3VRSUZtgCUl7QCB3r651noL4hrgY9cys',
     callbackOnLocationHash: true
   });
+  */
+
+  // instantiate Authentication object
+ var authentication = new auth0.Authentication({
+  domain:       'oc4.auth0.com',
+  clientID:     '1eoEgcEjrUMzCIZ1h7keDnt8w9gga6DA',
+});
+
+// instantiate Authentication object
+var webAuth = new auth0.WebAuth({
+ domain:       'oc4.auth0.com',
+ clientID:     '3VRSUZtgCUl7QCB3r651noL4hrgY9cys',
+ callbackOnLocationHash: true
+});
 
   // Handle authenticated event to store id_token in localStorage
   lock.on("authenticated", function (authResult) {
     isAuthCallback = true;
 
-    lock.getProfile(authResult.idToken, function (error, profile) {
-      if (error) {
-        // Handle error
-        return;
-      }
+    webAuth.client.userInfo(authResult.accessToken, function(err, profile) {
+    // Now you have the user's information
 
       localStorage.setItem('userToken', authResult.idToken);
+      localStorage.setItem('accessToken', authResult.accessToken);
       localStorage.setItem('connection-name', getConnectionFromProfile(profile));
 
       goToHomepage(authResult.state, authResult.idToken);
@@ -47,11 +60,13 @@ $(document).ready(function () {
     return;
   } else {
     // user is not logged, check whether there is an SSO session or not
-    auth0.getSSOData(function (err, data) {
+    authentication.getSSOData(function (err, data) {
       if (!isAuthCallback && !err && data.sso) {
         // there is! redirect to Auth0 for SSO
-        auth0.signin({
+        webAuth.authorize({
           connection: data.lastUsedConnection.name,
+          audience: 'kkapi',
+          responseType: 'token id_token',
           scope: 'openid name picture',
           state: getQueryParameter('targetUrl')
         });
@@ -90,7 +105,9 @@ $(document).ready(function () {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&]*)"),
       results = regex.exec(location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+      results = results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+      console.log(results)
+      return results
   }
 
   function getConnectionFromProfile(profile) {
