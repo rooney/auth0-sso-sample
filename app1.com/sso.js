@@ -7,22 +7,6 @@ $(document).ready(function () {
   // https://auth0.com/forum/t/lock-not-always-passing-audience/5121/21
 
   // instantiate Lock
-  /*
-  var lock = new Auth0Lock('3VRSUZtgCUl7QCB3r651noL4hrgY9cys', 'oc4.auth0.com', {
-    oidcConformant: true,
-    autoclose: true,
-    auth: {
-      params: {
-        scope: 'openid name picture',
-        responseType: "token id_token",
-        audience: 'kkapi',
-        sso: true,
-        redirect: true
-      }
-    }
-  });*/
-
-  // instantiate Lock
  var lock = new Auth0Lock('3VRSUZtgCUl7QCB3r651noL4hrgY9cys', 'oc4.auth0.com', {
    auth: {
      params: {
@@ -34,33 +18,11 @@ $(document).ready(function () {
  // instantiate Authentication object
  var authentication = new auth0.Authentication({
   domain:       'oc4.auth0.com',
-  clientID:     '1eoEgcEjrUMzCIZ1h7keDnt8w9gga6DA',
+  clientID:     'placeholder',
 });
-
-// instantiate Authentication object
-var webAuth = new auth0.WebAuth({
- domain:       'oc4.auth0.com',
- clientID:     '3VRSUZtgCUl7QCB3r651noL4hrgY9cys',
- callbackOnLocationHash: true
-});
-
-  // Handle authenticated event to store id_token in localStorage
-  lock.on("authenticated", function (authResult) {
-    isAuthCallback = true;
-
-    webAuth.client.userInfo(authResult.accessToken, function(err, profile) {
-    // Now you have the user's information
-
-      localStorage.setItem('userToken', authResult.idToken);
-      localStorage.setItem('accessToken', authResult.accessToken);
-      localStorage.setItem('connection-name', getConnectionFromProfile(profile));
-
-      goToHomepage(authResult.state, authResult.idToken);
-      return;
-    });
-  });
 
   var isAuthCallback = false;
+  alert('bam bam')
 
   // Get the user token if we've saved it in localStorage before
   var idToken = localStorage.getItem('userToken');
@@ -74,13 +36,20 @@ var webAuth = new auth0.WebAuth({
     // user is not logged, check whether there is an SSO session or not
     authentication.getSSOData(function (err, data) {
       if (!isAuthCallback && !err && data.sso) {
+        // instantiate Authentication object
+        var webAuth = new auth0.WebAuth({
+         domain:       'oc4.auth0.com',
+         clientID:     data.lastUsedClientID,
+         callbackOnLocationHash: true
+        });
+
         // there is! redirect to Auth0 for SSO
         webAuth.authorize({
           connection: data.lastUsedConnection.name,
           audience: 'kkapi',
           responseType: 'token id_token',
           scope: 'openid name picture',
-          redirectUri: 'http://app1.com:5000/ssoCallback.html',
+          redirectUri: 'http://app1.com:5000/ssoCallback.html?clientId=tony',
           state: 'YOUR_STATE'
           //state: getQueryParameter('targetUrl')
         });

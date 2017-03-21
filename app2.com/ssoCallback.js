@@ -3,27 +3,10 @@ $(document).ready(function () {
   // hide the page in case there is an SSO session (to avoid flickering)
   document.body.style.display = 'none';
 
-  // Useful form posts
-  // https://auth0.com/forum/t/lock-not-always-passing-audience/5121/21
+  // Mimick going to app2 ssoCallback endpoint
 
   // instantiate Lock
-  /*
-  var lock = new Auth0Lock('3VRSUZtgCUl7QCB3r651noL4hrgY9cys', 'oc4.auth0.com', {
-    oidcConformant: true,
-    autoclose: true,
-    auth: {
-      params: {
-        scope: 'openid name picture',
-        responseType: "token id_token",
-        audience: 'kkapi',
-        sso: true,
-        redirect: true
-      }
-    }
-  });*/
-
-  // instantiate Lock
- var lock = new Auth0Lock('3VRSUZtgCUl7QCB3r651noL4hrgY9cys', 'oc4.auth0.com', {
+ var lock = new Auth0Lock('1eoEgcEjrUMzCIZ1h7keDnt8w9gga6DA', 'oc4.auth0.com', {
    auth: {
      params: {
        scope: 'openid name picture'
@@ -40,7 +23,7 @@ $(document).ready(function () {
 // instantiate Authentication object
 var webAuth = new auth0.WebAuth({
  domain:       'oc4.auth0.com',
- clientID:     '3VRSUZtgCUl7QCB3r651noL4hrgY9cys',
+ clientID:     '1eoEgcEjrUMzCIZ1h7keDnt8w9gga6DA',
  callbackOnLocationHash: true
 });
 
@@ -71,24 +54,7 @@ var webAuth = new auth0.WebAuth({
     goToHomepage(getQueryParameter('targetUrl'), idToken);
     return;
   } else {
-    // user is not logged, check whether there is an SSO session or not
-    authentication.getSSOData(function (err, data) {
-      if (!isAuthCallback && !err && data.sso) {
-        // there is! redirect to Auth0 for SSO
-        webAuth.authorize({
-          connection: data.lastUsedConnection.name,
-          audience: 'kkapi',
-          responseType: 'token id_token',
-          scope: 'openid name picture',
-          redirectUri: 'http://app1.com:5000/ssoCallback.html',
-          state: 'YOUR_STATE'
-          //state: getQueryParameter('targetUrl')
-        });
-      } else {
-        // regular login
-        document.body.style.display = 'inline';
-      }
-    });
+    console.log('Get out of here !!!!')
   }
 
   // Showing Login
