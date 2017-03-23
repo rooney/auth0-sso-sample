@@ -17,6 +17,8 @@ $(document).ready(function () {
     callbackOnLocationHash: true
   });
 
+  alert($('#mapping').text());
+
   // Handle authenticated event to store id_token in localStorage
   lock.on("authenticated", function (authResult) {
     isAuthCallback = true;

@@ -3,17 +3,46 @@ $(document).ready(function () {
   // hide the page in case there is an SSO session (to avoid flickering)
   document.body.style.display = 'none';
 
+  var mapping = localStorage.getItem('mapping');
+  $('#mapping').val(mapping).keyup(function() {
+    localStorage.setItem('mapping', $(this).val());
+  });
+  try {
+    var map = {};
+    $.map(mapping.split('\n'), function(row) {
+      var keyvalue = row.split(':');
+      var key = keyvalue[0].trim();
+      var value = keyvalue[1];
+      var vals = $.map(value.split(','), function(val) {
+        return val.trim();
+      });
+      map[key] = vals;
+    });
+    mapping = map;
+  }
+  catch (e) {
+    mapping = {};
+  }
+  console.log(mapping);
+
+  var clientname = window.location.search.substring(1);
+  var conns = mapping[clientname];
+  console.log(clientname, conns);
+
+
+
   // instantiate Lock
-  var lock = new Auth0Lock('QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq', 'auth0pnp.auth0.com', {
+  var lock = new Auth0Lock('1yQdE2GXjcxfKxh6wtFeaIMVZ91Xp4S2', 'protocoldesigner.auth0.com', {
     auth: {
       params: {
         scope: 'openid name picture'
       }
-    }
+    },
+    allowedConnections: conns
   });
   var auth0 = new Auth0({
-    domain: 'auth0pnp.auth0.com',
-    clientID: 'QLxSuRiYf0mkkzYp8qZgNq1tBkesd8Sq',
+    domain: 'protocoldesigner.auth0.com',
+    clientID: '1yQdE2GXjcxfKxh6wtFeaIMVZ91Xp4S2',
     callbackOnLocationHash: true
   });
 
